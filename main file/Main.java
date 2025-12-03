@@ -7,75 +7,54 @@ class Main {
 
   void init(){
 
-    //First use a simple string with a z in it
-    String msg ="ABCDXYZ abz";
+    // This example we are substituting vowels
+    // with unicode characters
+    char[] sub = new char[5];
+    sub[0] = 'a';
+    sub[1] = 'e';
+    sub[2] = 'i';
+    sub[3] = 'o';
+    sub[4] = 'u';
 
-    String encodedMsg = encode(msg);
+    char[] sub2 = new char[5];
+    sub2[0] = '\u2663';  // Club
+    sub2[1] = '\u2660';  // Heart
+    sub2[2] = '\u2665';  // Spade
+    sub2[3] = '\u2666';  // Diamond
+    sub2[4] = '\u2836';  // Bralle symbol
+
     
-    System.out.println("Original msg: "+msg);
-    System.out.println("encoded msg: "+encodedMsg);
-
-    // now read a file encode and save file
-    msg = Input.readFile("Original.txt");
-    encodedMsg = encode(msg);
+    String file = Input.readFile("Original.txt");
+    String encodedMsg = subEncryption(file,sub,sub2);
     Input.writeFile("Encode.txt",encodedMsg);
 
-    // now decode the encode message
-
-    encodedMsg = Input.readFile("Encode.txt");
-    String decodedMsg = decode(encodedMsg);
-    Input.writeFile("Decoded.txt",decodedMsg);
-    
+    String decodedMsg = subEncryption(encodedMsg, sub2, sub);
+    Input.writeFile("Decode.txt", decodedMsg);
     
     
   }
 
-   String encode(String txt){
+  String subEncryption(String s, char[] sub, char[] sub2){
     String bld="";
-    int ascii;
-    char ch='\0';
-    for(int x=0; x<=txt.length()-1;x++){
-      ch=txt.charAt(x);
-      ascii=(int)ch;
-      
-      if(ascii == 90){
-        ascii = 65;
-      }
-      else if( ascii == 122){
-        ascii = 97;
-      }
-      else{
-        ascii+=1;
-      }
-      bld+= (char)ascii;
+    char ch ='\0';
+    int index=0;
+    for(int x=0; x<=s.length()-1; x++){
+      ch=s.charAt(x);
+      bld+=subst(ch, sub, sub2);
     }
-     
     return bld;
+  }
+  
+  char subst(char ch, char[] sub, char[] sub2){
+    for(int x=0; x<sub.length; x++){
+      if(sub[x]==ch){
+        return sub2[x];
+      }
+    }
+    return ch;
   }
 
   
-  String decode(String txt){
-    String bld="";
-    int ascii;
-    char ch='\0';
-    for(int x=0; x<=txt.length()-1;x++){
-      ch=txt.charAt(x);
-      ascii=(int)ch;
-      
-      if(ascii == 65){
-        ascii = 90;
-      }
-      else if( ascii == 97){
-        ascii = 122;
-      }
-      else{
-        ascii-=1;
-      }
-      bld+= (char)ascii;
-    }
-    return bld;
-  }
-
   int randInt(int lower, int upper){
     int range = upper - lower;
     return (int)(Math.random()*range+lower);
